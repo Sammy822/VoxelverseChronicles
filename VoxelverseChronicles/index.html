@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -6,22 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voxelverse Chronicles - Action RPG</title>
     
-    <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚔️</text></svg>">
     
-    <!-- External Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/8.2.3/pixi.min.js"></script>
     
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="index.css">
     
-    <!-- React Import Map -->
     <script type="importmap">
 {
   "imports": {
@@ -39,7 +33,6 @@
 </script>
 </head>
 <body class="bg-game-dark text-white overflow-hidden">
-    <!-- Rotate Device Overlay -->
     <div id="rotate-device-overlay">
         <div class="rotate-device-content">
              <div class="rotate-device-icon">🔄</div>
@@ -47,7 +40,6 @@
         </div>
     </div>
 
-    <!-- MetaMask Check Overlay -->
     <div id="metamask-overlay" class="fixed inset-0 flex items-center justify-center z-50 p-4 overflow-hidden">
         <div class="login-box-glow w-full max-w-2xl text-center p-12 md:p-16 border-4 border-game-gold bg-black/70 rounded-2xl animate-pixel-fade backdrop-blur-md relative z-10 flex flex-col items-center gap-6">
             <h1 class="font-pixel text-4xl md:text-5xl text-game-gold tracking-widest animate-title-glow" style="text-shadow: 2px 2px 0 #000, 0 0 10px #f39c12;">Voxelverse Chronicles</h1>
@@ -67,14 +59,11 @@
         </div>
     </div>
 
-    <!-- Game Container -->
     <div id="root" class="hidden"></div>
     <div id="notification-container"></div>
 
-    <!-- Sound System -->
     <script src="index.js"></script>
     
-    <!-- Main Script -->
     <script>
         // Enhanced MetaMask connection and game initialization
         window.addEventListener('load', () => {
@@ -137,7 +126,6 @@
         }, { passive: false });
     </script>
     
-    <!-- Load React App -->
     <script type="module" src="index.tsx"></script>
 </body>
 </html>
