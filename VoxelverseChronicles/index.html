@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voxelverse Chronicles - Action RPG</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚔️</text></svg>">
+    
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/8.2.3/pixi.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="index.css">
+    
+    <!-- React Import Map -->
+    <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@19.1.0",
+    "react-dom/client": "https://esm.sh/react-dom@19.1.0/client",
+    "react/": "https://esm.sh/react@19.1.0/",
+    "react-dom/": "https://esm.sh/react-dom@19.1.0/",
+    "ethers": "https://esm.sh/ethers@6.15.0",
+    "path": "https://esm.sh/path@^0.12.7",
+    "vite": "https://esm.sh/vite@^7.0.5",
+    "@tailwindcss/vite": "https://esm.sh/@tailwindcss/vite@^4.1.11",
+    "pixi.js": "https://esm.sh/pixi.js@^8.11.0"
+  }
+}
+</script>
+</head>
+<body class="bg-game-dark text-white overflow-hidden">
+    <!-- Rotate Device Overlay -->
+    <div id="rotate-device-overlay">
+        <div class="rotate-device-content">
+             <div class="rotate-device-icon">🔄</div>
+             <p>กรุณาหมุนหน้าจอเป็นแนวนอนเพื่อเล่น</p>
+        </div>
+    </div>
+
+    <!-- MetaMask Check Overlay -->
+    <div id="metamask-overlay" class="fixed inset-0 flex items-center justify-center z-50 p-4 overflow-hidden">
+        <div class="login-box-glow w-full max-w-2xl text-center p-12 md:p-16 border-4 border-game-gold bg-black/70 rounded-2xl animate-pixel-fade backdrop-blur-md relative z-10 flex flex-col items-center gap-6">
+            <h1 class="font-pixel text-4xl md:text-5xl text-game-gold tracking-widest animate-title-glow" style="text-shadow: 2px 2px 0 #000, 0 0 10px #f39c12;">Voxelverse Chronicles</h1>
+            <p class="font-prompt text-lg text-gray-300">เชื่อมต่อ Wallet เพื่อเริ่มต้นการผจญภัย</p>
+            <div class="flex items-end justify-center gap-4 text-8xl my-4">
+                <div class="animate-fox-float text-9xl relative z-10">🦊</div>
+            </div>
+            <button id="connect-metamask" class="pixel-button gold w-full max-w-sm text-xl animate-pulse-slow">
+                เชื่อมต่อ Wallet
+            </button>
+            <div class="mt-4">
+                <a href="https://metamask.io" target="_blank" rel="noopener" class="text-sm text-game-blue hover:text-game-gold font-prompt transition-colors">
+                    ยังไม่มี Wallet? ดาวน์โหลด MetaMask ที่นี่
+                </a>
+            </div>
+            <p id="connection-status" class="text-sm text-yellow-300 h-5"></p>
+        </div>
+    </div>
+
+    <!-- Game Container -->
+    <div id="root" class="hidden"></div>
+    <div id="notification-container"></div>
+
+    <!-- Sound System -->
+    <script src="index.js"></script>
+    
+    <!-- Main Script -->
+    <script>
+        // Enhanced MetaMask connection and game initialization
+        window.addEventListener('load', () => {
+            const metamaskOverlay = document.getElementById('metamask-overlay');
+            const root = document.getElementById('root');
+            const connectButton = document.getElementById('connect-metamask');
+            const statusText = document.getElementById('connection-status');
+
+            if (typeof window.ethereum === 'undefined') {
+                statusText.textContent = 'MetaMask is not installed!';
+                connectButton.disabled = true;
+                connectButton.classList.add('opacity-50', 'cursor-not-allowed');
+                return;
+            }
+
+            const connectWallet = async () => {
+                 try {
+                    statusText.textContent = 'Awaiting connection...';
+                    
+                    // User interaction for sound
+                    if (!window.soundSystem.isInitialized) {
+                        window.soundSystem.init();
+                    }
+
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+                    if (accounts.length > 0) {
+                        window.soundSystem.play('connect');
+                        metamaskOverlay.classList.add('hidden');
+                        root.classList.remove('hidden');
+                        window.soundSystem.playBGM();
+                    } else {
+                         statusText.textContent = 'Connection failed. No accounts found.';
+                    }
+                } catch (error) {
+                    console.error('Connection failed:', error);
+                    statusText.textContent = 'Connection rejected. Please try again.';
+                }
+            };
+            
+            connectButton.addEventListener('click', connectWallet);
+
+            // Listeners to handle account/network changes by reloading the page.
+            // This ensures the app state is always in sync with the wallet.
+            window.ethereum.on('accountsChanged', (accounts) => {
+                console.log('Account changed, reloading...');
+                window.location.reload();
+            });
+
+            window.ethereum.on('chainChanged', () => {
+                console.log('Network changed, reloading...');
+                window.location.reload();
+            });
+        });
+
+        // Prevent zoom on mobile
+        document.addEventListener('gesturestart', (e) => e.preventDefault());
+        document.addEventListener('touchmove', (e) => {
+            if (e.touches.length > 1) e.preventDefault();
+        }, { passive: false });
+    </script>
+    
+    <!-- Load React App -->
+    <script type="module" src="index.tsx"></script>
+</body>
+</html>
