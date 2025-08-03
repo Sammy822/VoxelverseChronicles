@@ -15,6 +15,12 @@ export default defineConfig(({ mode }) => {
       alias: {
         '@': path.resolve(__dirname, '.'),
       }
+    },
+    // เพิ่มส่วนนี้เข้ามาทั้งหมด
+    build: {
+      rollupOptions: {
+        external: ['ethers']
+      }
     }
   };
 });
